@@ -17,27 +17,12 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
+          username: root
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # Navigate to the project folder (ensure it exists)
-            mkdir -p ~/app
-            cd ~/app
+            cd /home/ubuntu/ci-cd-demo
             
-            # If the repo is already there, pull. Otherwise, clone (optional, assuming setup)
-            # For simplicity, we assume the code will be transferred or git pull will work.
-            # A more robust way is to use docker-compose with images from a registry.
-            
-            # Build and Restart (Simplified for this setup)
-            # Note: This assumes you have pushed the code to Git and it's being pulled on the server.
-            # Alternatively, you can use 'rsync' to sync files.
-            
-            # Recommendation: Pull latest code if Git is set up on EC2
-            if [ -d ".git" ]; then
-              git pull origin main
-            else
-              git clone https://github.com/${{ github.repository }} .
-            fi
-            
+            git pull
             docker compose down
             docker compose up --build -d
